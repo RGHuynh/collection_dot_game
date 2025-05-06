@@ -1,23 +1,19 @@
 function _init()
-  music(0)
-
+  -- music(0)
 end
 
 function _update()
-
-  Player:movement()
-  Player:d_pick_up(Coin)
-
+  cls(5)
 end
 
 function _draw()
-  cls(5)
 
+  -- DEBUGGING
   print("Player Score: " .. Player.score)
-  map(0, 0, 0, 0, 16, 16)
+  print("X: " .. Player.x)
+  print("Y: " .. Player.y)
 
-  spr(Player.sprite, Player.x, Player.y)
-
+  Map:draw()
+  Player:draw()
   Coin:draw()
-
 end

@@ -1,5 +1,5 @@
 Coin = {
-  current_coin_limit = 2,
+  current_coin_limit = 1,
   sprite = 4,
 
   current_coins = {},
@@ -25,6 +25,7 @@ Coin = {
 
 function draw_coin(current_coins)
   for coin in all(current_coins) do
+    rect(coin.x, coin.y, coin.x + 16, coin.y + 16, 7)
     spr(coin.sprite, coin.x, coin.y, 2, 2)
   end
 end
