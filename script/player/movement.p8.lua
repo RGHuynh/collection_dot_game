@@ -12,48 +12,72 @@ Player = {
   size = 0,
 
   score = 0,
+  is_flip_x = false,
 
+  movement_timer = 1,
   movement = function(self)
-    if btn(0) then self.x = self.x - 1 end
-    if btn(1) then self.x = self.x + 1 end
-    if btn(2) then self.y = self.y - 1 end
+    if btn(0) then 
+      self.x = self.x - 1
+      self.is_flip_x = true
+      self:movement_motion()
+    end
+    if btn(1) then
+       self.x = self.x + 1 
+       self.is_flip_x = false
+       self:movement_motion()
+    end
+    if btn(2) then 
+      self.y = self.y - 1 
+    end
     if btn(3) then self.y = self.y + 1 end
   end,
 
+  movement_motion = function(self)
+
+    if self.movement_timer < 5 then
+      self.movement_timer += 1
+    else
+      if self.sprite < 2 then
+        self.sprite += 1
+      else
+        self.sprite = 1
+      end
+
+      self.movement_timer = 1
+    end
+   
+  end,
+  
   d_pick_up = function(self, object)
 
     local player_hit_box = self:player_hit_box()
 
-    local t = player_hit_box.tile_player_x
-    local e =  player_hit_box.tile_player_y
-
-    print('player x: ' .. self.x + self.size)
-    print('player y: ' .. self.y + self.size)
-
-
     for k, coin in pairs(object.current_coins) do
 
-      local found_coin = (coin.pixel_x +4) == self.x + self.size and (coin.pixel_y  + 4) == self.y + self.size
+      local a = player_hit_box.tile_player_x == coin.tile_x and player_hit_box.tile_player_y == coin.tile_y
 
-      print('coin x: ' .. coin.pixel_x)
-      print('coin y: ' .. coin.pixel_y)
-      print(found_coin)
+      local b = player_hit_box.tile_player_x == coin.tile_x and player_hit_box.tile_player_y2 == coin.tile_y2
+
+      local c = player_hit_box.tile_player_x2 == coin.tile_x2 and player_hit_box.tile_player_y2 == coin.tile_y2 
+
+      local d = player_hit_box.tile_player_x2 == coin.tile_x2 and player_hit_box.tile_player_y == coin.tile_y
+
       
-      if found_coin then
-        del(object.current_coins, coin)
-        spr(0, coin.pixel_x, coin.pixel_x, 2, 2)
-        sfx(0)
-        self.score = self.score + 1
-      end
+      if a or b or c or d then
+      del(object.current_coins, coin)
+      sfx(0)
+      self.score = self.score + 1
 
+      end
+  
     end
   end,
 
   player_hit_box = function(self)
     local tile_player_x = flr(self.x / 8)
     local tile_player_y = flr(self.y / 8)
-    local tile_player_x2 = flr((self.x + 7) / 4)
-    local tile_player_y2 = flr((self.y + 7) / 4)
+    local tile_player_x2 = flr((self.x + 7) / 8)
+    local tile_player_y2 = flr((self.y + 7) / 8)
 
     return {
       tile_player_x = tile_player_x,
@@ -70,10 +94,12 @@ Player = {
     self:movement()
 
     Map:collision(self, current_player_position_x, current_player_position_y)
-    rect(self.x - self.size, self.y - self.size, self.x +8 + self.size, self.y +8 + self.size, 8)
+
+    -- DEGUB
+    -- rect(self.x - self.size, self.y - self.size, self.x +8 + self.size, self.y +8 + self.size, 8)
 
     self:d_pick_up(Coin)
-    spr(Player.sprite, Player.x, Player.y)
+    spr(self.sprite, self.x, self.y, 1, 1, self.is_flip_x)
   end
 
 }

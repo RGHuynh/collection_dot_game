@@ -3,13 +3,13 @@ function _init()
 end
 
 function _update()
-  cls(5)
+  cls(3)
 end
 
 function _draw()
 
-  -- DEBUGGING
   print("Player Score: " .. Player.score)
+  -- DEBUGGING
   -- print("X: " .. Player.x)
   -- print("Y: " .. Player.y)
 
